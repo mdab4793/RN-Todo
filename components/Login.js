@@ -1,22 +1,36 @@
 import { Text, TextInput, View, Button, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
-function Login({ navigation }) {
+import axios from "axios";
+
+const Login = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [accessToken, setAccessToken] = useState(""); // 토큰 상태 추가
   const handleLogin = () => {
-    if (username === "1111" && password === "1111") {
-      alert("로그인성공");
-      navigation.navigate("Home");
-    } else {
-      alert("로그인실패");
-      setErrorMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
-    }
+    axios
+      .post("http://15.164.230.202:3011/auth/login", {
+        username,
+        password,
+      })
+      .then((response) => {
+        const accessToken = response.data.result.access_token;
+        setAccessToken(accessToken);
+
+        alert("로그인 성공!");
+
+        navigation.navigate("Home");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("로그인 실패!");
+        setErrorMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
+      });
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Go to Home" onPress={() => navigation.navigate("Home")} />
+      <Button title="Home" onPress={() => navigation.navigate("Home")} />
       <Text style={styles.title}>로그인</Text>
       <TextInput
         style={styles.loginInput}
@@ -34,9 +48,16 @@ function Login({ navigation }) {
         secureTextEntry={true}
       ></TextInput>
       <Button title="로그인" onPress={handleLogin} />
+      <Button
+        title="회원가입"
+        onPress={() => navigation.navigate("Register")}
+      />
+      {errorMessage ? (
+        <Text style={styles.errorMessage}>{errorMessage}</Text>
+      ) : null}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

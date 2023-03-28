@@ -17,11 +17,10 @@ import { Entypo } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import Login from "./components/Login";
-
+import Register from "./components/Register";
 import Home from "./components/Home";
 import TodoList from "./components/TodoList";
 const Stack = createStackNavigator();
-const STORAGE_KEY = "@toDos";
 
 export default function App() {
   return (
@@ -30,6 +29,7 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="TodoList" component={TodoList} />
+        <Stack.Screen name="Register" component={Register} />
       </Stack.Navigator>
     </NavigationContainer>
   );
