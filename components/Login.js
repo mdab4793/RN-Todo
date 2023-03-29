@@ -1,52 +1,48 @@
 import { Text, TextInput, View, Button, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation }) => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [accessToken, setAccessToken] = useState(""); // 토큰 상태 추가
-  const handleLogin = () => {
-    axios
-      .post("http://15.164.230.202:3011/auth/login", {
-        username,
-        password,
-      })
-      .then((response) => {
-        const accessToken = response.data.result.access_token;
-        setAccessToken(accessToken);
 
-        alert("로그인 성공!");
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://15.164.230.202:3011/auth/login",
+        { email, password }
+      );
+      const accessToken = response.data.result.access_token;
+      await AsyncStorage.setItem("accessToken", accessToken);
 
-        navigation.navigate("Home");
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("로그인 실패!");
-        setErrorMessage("아이디 또는 비밀번호가 올바르지 않습니다.");
-      });
+      alert("로그인 성공!");
+      navigation.navigate("TodoList");
+    } catch (error) {
+      console.log(error);
+      alert("로그인 실패!");
+      setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Home" onPress={() => navigation.navigate("Home")} />
       <Text style={styles.title}>로그인</Text>
       <TextInput
         style={styles.loginInput}
         placeholder="이메일"
-        onChangeText={(text) => setUsername(text)}
-        value={username}
-      ></TextInput>
+        onChangeText={(text) => setEmail(text)}
+        value={email}
+      />
       <TextInput
         style={styles.passwordInput}
         type="password"
         placeholder="비밀번호"
         onChangeText={(text) => setPassword(text)}
         value={password}
-        //비밀번호안보이게
         secureTextEntry={true}
-      ></TextInput>
+      />
       <Button title="로그인" onPress={handleLogin} />
       <Button
         title="회원가입"
@@ -96,4 +92,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
+
 export default Login;
