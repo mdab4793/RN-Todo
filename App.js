@@ -1,38 +1,38 @@
-import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  TextInput,
-  ScrollView,
-  Alert,
-  Button,
-} from "react-native";
-import { theme } from "./colors";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Entypo } from "@expo/vector-icons";
-import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet, Text, View } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import BottomTabs from "./components/BottomTabs";
+import HomeScreen from "./components/HomeScreen";
 import Login from "./components/Login";
-import Register from "./components/Register";
-import Home from "./components/Home";
-import TodoList from "./components/TodoList";
+import * as SplashScreen from "expo-splash-screen";
+import { useState, useEffect } from "react";
+import Splash from "./components/Splash";
+// 앱이 각 화면이 전환될 수 있는 기본 틀.
 const Stack = createStackNavigator();
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
+  //로딩여부
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 3000);
+  }, []);
+  if (isLoading) {
+    return <Splash />;
+  } else {
+    return (
+      <NavigationContainer>
+        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="TodoList" component={TodoList} />
-        <Stack.Screen name="Register" component={Register} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+        <BottomTabs />
+      </NavigationContainer>
+    );
+  }
 }
-
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  home: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  todo: { flex: 1, justifyContent: "center", alignItems: "center" },
+});
