@@ -20,8 +20,6 @@ const Register = ({ navigation }) => {
       });
   };
 
-  // if (!email) return null;
-
   return (
     <View style={styles.container}>
       <TextInput

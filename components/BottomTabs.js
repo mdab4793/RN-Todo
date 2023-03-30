@@ -1,9 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Login from "./Login";
-import Register from "./Register";
 import TodoList from "./TodoList";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./HomeScreen";
+import MyPage from "./MyPage";
 
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => {
@@ -24,11 +23,11 @@ const BottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="My"
+        component={MyPage}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Entypo name="home" size={size} color={color} />
+            <Ionicons name="person" size={size} color={color} />
           ),
         }}
       />

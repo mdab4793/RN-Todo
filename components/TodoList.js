@@ -13,10 +13,12 @@ import {
 import { theme } from "../colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
-
+import BottomTabs from "./BottomTabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 const STORAGE_KEY = "@toDos";
-
-export default function TodoList() {
+const Stack = createStackNavigator();
+const TodoList = () => {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
   const [toDos, setToDos] = useState({});
@@ -75,7 +77,10 @@ export default function TodoList() {
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
           <Text
-            style={{ ...styles.btnText, color: working ? "white" : theme.grey }}
+            style={{
+              ...styles.btnText,
+              color: working ? "white" : theme.grey,
+            }}
           >
             Work
           </Text>
@@ -113,7 +118,7 @@ export default function TodoList() {
       </ScrollView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -149,3 +154,4 @@ const styles = StyleSheet.create({
   },
   toDoText: { color: "white", fontSize: 16, fontWeight: "500" },
 });
+export default TodoList;

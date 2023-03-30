@@ -2,12 +2,13 @@ import { Text, TextInput, View, Button, StyleSheet } from "react-native";
 import { useState } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
-const Login = ({ navigation }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const navigation = useNavigation();
   const handleLogin = async () => {
     try {
       const response = await axios.post(
@@ -16,9 +17,8 @@ const Login = ({ navigation }) => {
       );
       const accessToken = response.data.result.access_token;
       await AsyncStorage.setItem("accessToken", accessToken);
-
-      alert("로그인 성공!");
       navigation.navigate("TodoList");
+      alert("로그인 성공!");
     } catch (error) {
       console.log(error);
       alert("로그인 실패!");
@@ -44,6 +44,7 @@ const Login = ({ navigation }) => {
         secureTextEntry={true}
       />
       <Button title="로그인" onPress={handleLogin} />
+
       <Button
         title="회원가입"
         onPress={() => navigation.navigate("Register")}

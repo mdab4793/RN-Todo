@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import Login from "./Login";
 import { useState } from "react";
 import TodoList from "./TodoList";
+import BottomTabs from "./BottomTabs";
 
 const Stack = createStackNavigator();
 
