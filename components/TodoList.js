@@ -16,9 +16,11 @@ import { Entypo } from "@expo/vector-icons";
 import BottomTabs from "./BottomTabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { useSelector } from "react-redux";
 const STORAGE_KEY = "@toDos";
 const Stack = createStackNavigator();
-const TodoList = () => {
+const TodoList = ({ accessToken }) => {
+  // const accessToken = useSelector((state) => state.auth.accessToken);
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
   const [toDos, setToDos] = useState({});

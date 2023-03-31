@@ -14,4 +14,5 @@ const Splash = () => {
     </View>
   );
 };
+
 export default Splash;

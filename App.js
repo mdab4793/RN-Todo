@@ -24,9 +24,8 @@ export default function App() {
 
   if (isLoading) {
     return <Splash />;
-
     //login false면 로그인화면
-  } else if (login === false) {
+  } else if (login === true) {
     return (
       <Provider store={store}>
         <NavigationContainer>
