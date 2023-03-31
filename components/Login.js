@@ -13,7 +13,6 @@ const Login = () => {
   const navigation = useNavigation();
   const handleLogin = async () => {
     dispatch(loginStart());
-
     try {
       const response = await axios.post(
         "http://15.164.230.202:3011/auth/login",
@@ -22,8 +21,9 @@ const Login = () => {
 
       const accessToken = response.data.result.access_token;
       await AsyncStorage.setItem("accessToken", accessToken);
-      navigation.navigate("TodoList");
+      navigation.navigate("BottomTabs");
       alert("로그인 성공!");
+      console.log(accessToken); // 토큰 값이 출력됩니다.
       // 토큰이 저장되면 TodoList 화면으로 이동하도록 navigation 설정
       dispatch(
         loginSuccess({ token: accessToken, username: response.data.username })
@@ -34,6 +34,7 @@ const Login = () => {
       dispatch(loginFail(error.message));
       // setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
+
     // .catch((error) => {
     //   alert("로그인 실패!");
     //   dispatch(loginFail(error.message));

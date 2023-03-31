@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TodoList from "./TodoList";
 import { Entypo, Ionicons } from "@expo/vector-icons";
-import HomeScreen from "./HomeScreen";
+import { View, Text, StyleSheet } from "react-native";
 import MyPage from "./MyPage";
 
 const Tab = createBottomTabNavigator();
@@ -13,6 +13,7 @@ const BottomTabs = () => {
       {/* <Tab.Screen name="TodoList" component={TodoList}>
         <Entypo name="add-to-list" size={24} color="black" />
       </Tab.Screen> */}
+
       <Tab.Screen
         name="TodoList"
         component={TodoList}
