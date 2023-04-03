@@ -5,7 +5,7 @@ import BottomTabs from "./components/BottomTabs";
 import HomeScreen from "./components/HomeScreen";
 import Login from "./components/Login";
 import { useState, useEffect } from "react";
-import Splash from "./components/Splash";
+
 import TodoList from "./components/TodoList";
 import Register from "./components/Register";
 import { Provider } from "react-redux";

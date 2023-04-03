@@ -1,11 +1,10 @@
 import { View, Text, Button } from "react-native";
-import { logout } from "../store";
+import { logout } from "./../store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { authSlice } from "../store";
 
-const MyPage = ({ route }) => {
+const MyPage = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const handleLogout = async () => {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TextInput, Button, Alert } from "react-native";
 import axios from "axios";
-
+const apiUrl = process.env.API_URL;
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -9,7 +9,7 @@ const Register = ({ navigation }) => {
 
   const handleRegister = () => {
     axios
-      .post("http://15.164.230.202:3011/auth/signup", { email, password })
+      .post(`${apiUrl}/auth/signup`, { email, password })
       .then((response) => {
         alert("회원가입 성공!");
         console.log(response);

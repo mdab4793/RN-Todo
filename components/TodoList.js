@@ -13,10 +13,8 @@ import {
 import { theme } from "../colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
-import BottomTabs from "./BottomTabs";
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useSelector } from "react-redux";
+
 const STORAGE_KEY = "@toDos";
 const Stack = createStackNavigator();
 const TodoList = ({ accessToken }) => {

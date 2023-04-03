@@ -1,16 +1,13 @@
 import { View, Text, StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
+
 import Login from "./Login";
 import { useEffect, useState } from "react";
 import TodoList from "./TodoList";
-import BottomTabs from "./BottomTabs";
-import Register from "./Register";
-import MyPage from "./MyPage";
+
 import Splash from "./Splash";
 import { useDispatch, useSelector } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loginStart, loginSuccess, loginFail } from "../store";
+
 const Stack = createStackNavigator();
 
 const HomeScreen = () => {

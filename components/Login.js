@@ -4,7 +4,9 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { loginStart, loginSuccess, loginFail } from "../store";
+import { loginStart, loginSuccess, loginFail } from "./../store/authSlice";
+
+const apiUrl = process.env.API_URL;
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,10 +16,10 @@ const Login = () => {
   const handleLogin = async () => {
     dispatch(loginStart());
     try {
-      const response = await axios.post(
-        "http://15.164.230.202:3011/auth/login",
-        { email, password }
-      );
+      const response = await axios.post(`${apiUrl}/auth/login`, {
+        email,
+        password,
+      });
 
       const accessToken = response.data.result.access_token;
       await AsyncStorage.setItem("accessToken", accessToken);
@@ -34,60 +36,7 @@ const Login = () => {
       dispatch(loginFail(error.message));
       // setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
-
-    // .catch((error) => {
-    //   alert("로그인 실패!");
-    //   dispatch(loginFail(error.message));
-    //   console.log(error);
-    // });
   };
-
-  // const handleLogin = async () => {
-  //   try {
-  //     const response = await axios.post(
-  //       "http://15.164.230.202:3011/auth/login",
-  //       { email, password }
-  //     );
-  //     const accessToken = response.data.result.access_token;
-  //     await AsyncStorage.setItem("accessToken", accessToken);
-  //     navigation.navigate("TodoList");
-  //     alert("로그인 성공!");
-  //   } catch (error) {
-  //     console.log(error);
-  //     alert("로그인 실패!");
-  //     setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
-  //   }
-  // };
-
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.title}>로그인</Text>
-  //       <TextInput
-  //         style={styles.loginInput}
-  //         placeholder="이메일"
-  //         onChangeText={(text) => setEmail(text)}
-  //         value={email}
-  //       />
-  //       <TextInput
-  //         style={styles.passwordInput}
-  //         type="password"
-  //         placeholder="비밀번호"
-  //         onChangeText={(text) => password(text)}
-  //         value={password}
-  //         secureTextEntry={true}
-  //       />
-  //       <Button title="로그인" onPress={handleLogin} />
-
-  //       <Button
-  //         title="회원가입"
-  //         onPress={() => navigation.navigate("Register")}
-  //       />
-  //       {errorMessage ? (
-  //         <Text style={styles.errorMessage}>{errorMessage}</Text>
-  //       ) : null}
-  //     </View>
-  //   );
-  // };
 
   return (
     <View style={styles.container}>
