@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 
+const apiUrl = process.env.API_URL;
 const STORAGE_KEY = "@toDos";
 const Stack = createStackNavigator();
 const TodoList = ({ accessToken }) => {
@@ -22,6 +23,7 @@ const TodoList = ({ accessToken }) => {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
   const [toDos, setToDos] = useState({});
+
   useEffect(() => {
     loadToDos();
   }, []);
@@ -46,12 +48,13 @@ const TodoList = ({ accessToken }) => {
     setText("");
     await saveToDos(newToDos);
   };
+  console.log(text);
   console.log(toDos);
   const saveToDos = async (toSave) => {
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    await AsyncStorage.setItem(`${apiUrl}/moni-app`, JSON.stringify(toSave));
   };
   const loadToDos = async () => {
-    const s = await AsyncStorage.getItem(STORAGE_KEY);
+    const s = await AsyncStorage.getItem(`${apiUrl}/moni-app`);
     console.log(s);
     s !== null ? setToDos(JSON.parse(s)) : null;
   };

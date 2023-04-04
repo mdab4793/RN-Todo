@@ -3,7 +3,7 @@ import TodoList from "./TodoList";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet } from "react-native";
 import MyPage from "./MyPage";
-
+import Todo from "./Todo";
 const Tab = createBottomTabNavigator();
 const BottomTabs = () => {
   return (
@@ -13,10 +13,18 @@ const BottomTabs = () => {
       {/* <Tab.Screen name="TodoList" component={TodoList}>
         <Entypo name="add-to-list" size={24} color="black" />
       </Tab.Screen> */}
-
-      <Tab.Screen
+      {/* <Tab.Screen
         name="TodoList"
         component={TodoList}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Entypo name="add-to-list" size={size} color={color} />
+          ),
+        }}
+      /> */}
+      <Tab.Screen
+        name="Todo"
+        component={Todo}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Entypo name="add-to-list" size={size} color={color} />
