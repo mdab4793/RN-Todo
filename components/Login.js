@@ -1,10 +1,10 @@
 import { Text, TextInput, View, Button, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { loginStart, loginSuccess, loginFail } from "./../store/authSlice";
+import { loginStart, loginSuccess, loginFail } from "../store";
 
 const apiUrl = process.env.API_URL;
 const Login = () => {
@@ -13,6 +13,34 @@ const Login = () => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
   const navigation = useNavigation();
+  useEffect(() => {
+    const checkToken = async () => {
+      const accessToken = await AsyncStorage.getItem("accessToken");
+      if (accessToken) {
+        try {
+          const response = await axios.get(`${apiUrl}/auth/me`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+
+          if (response.data.isValid) {
+            dispatch(
+              loginSuccess({
+                token: accessToken,
+                username: response.data.username,
+              })
+            );
+            navigation.navigate("BottomTabs");
+          }
+        } catch (error) {
+          console.log(error);
+          alert("자동로그인 실패!");
+          // accessToken이 유효하지 않다면 로그인 화면을 표시합니다.
+        }
+      }
+    };
+    checkToken();
+  }, []);
+
   const handleLogin = async () => {
     dispatch(loginStart());
     try {
@@ -23,18 +51,17 @@ const Login = () => {
 
       const accessToken = response.data.result.access_token;
       await AsyncStorage.setItem("accessToken", accessToken);
-      navigation.navigate("BottomTabs");
       alert("로그인 성공!");
       console.log(accessToken); // 토큰 값이 출력됩니다.
-      // 토큰이 저장되면 TodoList 화면으로 이동하도록 navigation 설정
+
       dispatch(
         loginSuccess({ token: accessToken, username: response.data.username })
       );
+      navigation.navigate("BottomTabs");
     } catch (error) {
       console.log(error);
       alert("로그인 실패!");
       dispatch(loginFail(error.message));
-      // setErrorMessage("이메일 또는 비밀번호가 올바르지 않습니다.");
     }
   };
 

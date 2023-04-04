@@ -4,30 +4,16 @@ import { createStackNavigator } from "@react-navigation/stack";
 import BottomTabs from "./components/BottomTabs";
 import HomeScreen from "./components/HomeScreen";
 import Login from "./components/Login";
-import { useState, useEffect } from "react";
-
 import TodoList from "./components/TodoList";
 import Register from "./components/Register";
 import { Provider } from "react-redux";
-import store from "./store";
 import MyPage from "./components/MyPage";
+import store from "./store";
 
 // 앱이 각 화면이 전환될 수 있는 기본 틀.
 const Stack = createStackNavigator();
 
 export default function App() {
-  // 로딩 여부
-  const [isLoading, setIsLoading] = useState(true);
-  const [login, setLogin] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => setIsLoading(false), 3000);
-  }, []);
-
-  // if (isLoading) {
-  //   return <Splash />;
-  //   //login false면 로그인화면
-  // } else if (login == false) {
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -42,18 +28,8 @@ export default function App() {
       </NavigationContainer>
     </Provider>
   );
-  // login true면 todolist bottomNav
-  // } else {
-  //   return (
-  //     <Provider store={store}>
-  //       <NavigationContainer>
-  //         <BottomTabs />
-  //       </NavigationContainer>
-  //     </Provider>
-  //   );
-  // }
 }
-// }
+
 const styles = StyleSheet.create({
   home: {
     flex: 1,
