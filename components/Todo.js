@@ -11,12 +11,11 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { theme } from "../colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
-import { createStackNavigator } from "@react-navigation/stack";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+
 const apiUrl = process.env.API_URL;
 const Todo = () => {
   const [inputText, setInputText] = useState("");
@@ -24,6 +23,7 @@ const Todo = () => {
 
   // store에서 accessToken 값을 가져온다.
   const accessToken = useSelector((state) => state.authSlice.accessToken);
+
   useEffect(() => {
     axios
       .get(`${apiUrl}/moni-app`, {
@@ -35,17 +35,16 @@ const Todo = () => {
       .catch((error) => {
         console.error("실패", error);
       });
-  }, []);
-
+    // todos가 변경될 때마다 useEffect 함수 실행 post에 새값을 넣을때마다 todos가변경되면서 새로업데이트
+  }, [todos]);
   const handleAddTodo = () => {
     if (inputText !== "") {
       const newTodo = {
-        key: Date.now().toString(),
         appname: inputText,
-        keyword: "ㄴ",
-        country: "ㄴ",
-        storeId: "8",
-        store: "ㄴ",
+        keyword: "입력완료",
+        country: "입력완료",
+        storeId: "입력완료",
+        store: "입력완료",
       };
       axios
         .post(`${apiUrl}/moni-app`, newTodo, {
@@ -54,13 +53,13 @@ const Todo = () => {
         .then((response) => {
           setTodos([...todos, response.data]);
           setInputText("");
-          console.log(response);
         })
         .catch((error) => {
           console.log(error);
         });
     }
   };
+
   //   //TodoList추가 함수
   //   const handleAddTodo = async () => {
   //     //만약 inputText가 공백 ("")이아니면,즉 글자가 있을경우에만 리스트에 추가된다.
@@ -83,10 +82,19 @@ const Todo = () => {
   //       }
   //     }
   //   };
-  //   const handleDeleteTodo = (id) => {
-  //     const newTodos = todos.filter((todo) => todo.key !== id);
-  //     setTodos(newTodos);
-  //   };
+
+  const handleDeleteTodo = (id) => {
+    axios
+      .delete(`${apiUrl}/moni-app/${id}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+      .then((response) => {
+        setTodos(todos.filter((todo) => todo.id !== id));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -109,11 +117,16 @@ const Todo = () => {
           <View style={styles.todoItem}>
             <Text>{item.appname}</Text>
             <TouchableOpacity>
-              <Entypo name="trash" size={18} color="black" />
+              <Entypo
+                name="trash"
+                size={18}
+                color="black"
+                onPress={() => handleDeleteTodo(item.id)}
+              />
             </TouchableOpacity>
           </View>
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );
