@@ -15,47 +15,65 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { setTodos } from "../store";
 
 const apiUrl = process.env.API_URL;
 const Todo = () => {
   const [inputText, setInputText] = useState("");
-  const [todos, setTodos] = useState([]);
 
   // store에서 accessToken 값을 가져온다.
   const accessToken = useSelector((state) => state.authSlice.accessToken);
-
+  const dispatch = useDispatch();
+  const todos = useSelector((state) => state.todosSlice);
+  //최초랜더링 될때 get되는 애
   useEffect(() => {
+    console.log("inuseEffect");
+    //get요청 함수를 넣어서 최초랜더링될때 get요청 받을수있게한다.
+    getTodos();
+  }, []);
+  //get요청 함수
+  const getTodos = async () => {
     axios
       .get(`${apiUrl}/moni-app`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
-      .then((result) => {
-        setTodos(result.data.result);
+      .then((response) => {
+        console.log(response.data.result);
+        dispatch(setTodos(response.data.result));
       })
       .catch((error) => {
-        console.error("실패", error);
+        console.log("실패", error);
+        alert("실패");
       });
-    // todos가 변경될 때마다 useEffect 함수 실행 post에 새값을 넣을때마다 todos가변경되면서 새로업데이트
-  }, [todos]);
+  };
+  //post요청
   const handleAddTodo = () => {
     if (inputText !== "") {
       const newTodo = {
         appname: inputText,
-        keyword: "입력완료",
-        country: "입력완료",
-        storeId: "입력완료",
-        store: "입력완료",
+        keyword: inputText,
+        country: inputText,
+        storeId: inputText,
+        store: inputText,
       };
+
       axios
         .post(`${apiUrl}/moni-app`, newTodo, {
           headers: { Authorization: `Bearer ${accessToken}` },
         })
         .then((response) => {
-          setTodos([...todos, response.data]);
+          // 기존에 있는 todos와 새로 추가된 todo를 합쳐서 상태를 업데이트
+          console.log("in post axios", response.data);
+          //get요청 함수를 사용해서 post요청을 한후 바로 get요청을 받아와서
+          //할일 추가하면 바로 화면에 추가되게끔 getTodos()함수를 사용한다.
+          getTodos();
+          //dispatch(setTodos([...todos, response.data]));
           setInputText("");
+          // alert("성공");
         })
         .catch((error) => {
           console.log(error);
+          alert("실패");
         });
     }
   };
@@ -89,13 +107,13 @@ const Todo = () => {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then((response) => {
-        setTodos(todos.filter((todo) => todo.id !== id));
+        dispatch(setTodos(todos.filter((item) => item.id !== id)));
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
+  console.log(todos, "in render");
   return (
     <View style={styles.container}>
       <Text style={styles.title}>To-Do List</Text>
@@ -103,7 +121,7 @@ const Todo = () => {
         <TextInput
           style={styles.input}
           value={inputText}
-          onChangeText={(appname) => setInputText(appname)}
+          onChangeText={(text) => setInputText(text)}
           placeholder="Enter a to-do item"
         />
         <TouchableOpacity style={styles.addButton} onPress={handleAddTodo}>

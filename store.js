@@ -30,6 +30,16 @@ const authSlice = createSlice({
     },
   },
 });
+const todosSlice = createSlice({
+  name: "todosSlice",
+  initialState: [],
+  reducers: {
+    setTodos(state, action) {
+      console.log(action.payload, "in setTodo reducer");
+      return action.payload;
+    },
+  },
+});
 const persistConfig = {
   key: "authSlice",
   storage: AsyncStorage,
@@ -42,10 +52,12 @@ const persistedAuthSliceReducer = persistReducer(
 export const store = configureStore({
   reducer: {
     authSlice: persistedAuthSliceReducer,
+    todosSlice: todosSlice.reducer,
   },
 });
 export const { loginStart, loginSuccess, loginFail, logout } =
   authSlice.actions;
+export const { setTodos } = todosSlice.actions;
 export const persistor = persistStore(store);
 
 export default store;
