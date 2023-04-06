@@ -20,6 +20,12 @@ import { setTodos } from "../store";
 const apiUrl = process.env.API_URL;
 const Todo = () => {
   const [inputText, setInputText] = useState("");
+  //수정 modal
+  const [updateModal, setUpdateModal] = useState(false);
+  //수정 inputText
+  const [updateInput, setUpdateInput] = useState("");
+  // 현재 선택된 항목의 ID를 저장하는 상태 추가
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
   // store에서 accessToken 값을 가져온다.
   const accessToken = useSelector((state) => state.authSlice.accessToken);
@@ -101,7 +107,9 @@ const Todo = () => {
   //     }
   //   };
 
+  //삭제함수
   const handleDeleteTodo = (id) => {
+    console.log(`${apiUrl}/moni-app/${id}`, id, "inDeleteTodo");
     axios
       .delete(`${apiUrl}/moni-app/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -113,7 +121,54 @@ const Todo = () => {
         console.log(error);
       });
   };
-  console.log(todos, "in render");
+
+  // //수정함수
+  // const handleUpdateTodo = (id) => {
+  //   if (updateInput !== "") {
+  //     const updateTodo = {
+  //       appname: updateInput,
+  //     };
+  //     // console.log(apiUrl);
+  //     // console.log(`${apiUrl}/moni-app/${id}`, id, updateTodo, "inupdateTodo");
+  //     axios
+  //       .patch(`${apiUrl}/moni-app/${id}`, updateTodo, {
+  //         headers: { Authorization: `Bearer ${accessToken}` },
+  //       })
+  //       .then((response) => {
+  //         getTodos();
+  //         setUpdateModal(false);
+  //       })
+  //       .catch((error) => {
+  //         console.log("Error in PATCH request:", error.response); // 오류 메시지 출력
+  //         alert("실패");
+  //       });
+  //   }
+  // };
+
+  //수정함수
+  const handleUpdateTodo = (id) => {
+    if (updateInput !== "") {
+      axios
+        .patch(
+          `${apiUrl}/moni-app/${id}`,
+          { appname: updateInput },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        )
+        .then((response) => {
+          getTodos();
+          setUpdateModal(false);
+        })
+        .catch((error) => {
+          console.log("Error in PATCH request:", error.response); // 오류 메시지 출력
+          alert("실패");
+        });
+    }
+  };
+
+  // console.log(todos, "in render");
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>To-Do List</Text>
@@ -134,18 +189,56 @@ const Todo = () => {
         renderItem={({ item }) => (
           <View style={styles.todoItem}>
             <Text>{item.appname}</Text>
-            <TouchableOpacity>
-              <Entypo
-                name="trash"
-                size={18}
-                color="black"
-                onPress={() => handleDeleteTodo(item.id)}
-              />
-            </TouchableOpacity>
+            <View style={styles.todoIcon}>
+              <TouchableOpacity>
+                <Entypo
+                  style={styles.iconButton}
+                  name="trash"
+                  onPress={() => {
+                    handleDeleteTodo(item.renderItem);
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Entypo
+                  style={styles.iconButton}
+                  name="edit"
+                  onPress={() => {
+                    setUpdateModal(true);
+                    setUpdateInput(item.appname);
+                    setSelectedItemId(item.id); // 선택한 항목의 ID를 저장
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         keyExtractor={(item) => item.id}
       />
+      {updateModal == true ? (
+        <View style={styles.updateContainer}>
+          <TextInput
+            style={styles.input}
+            defaultValue={updateInput}
+            onChangeText={(text) => setUpdateInput(text)}
+            placeholder="update to-do item"
+          />
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => {
+              handleUpdateTodo(selectedItemId); // 저장된 항목 ID를 사용하여 함수 호출
+            }}
+          >
+            <Text style={styles.addButtonText}>update</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setUpdateModal(false)}
+          >
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -201,6 +294,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
+  },
+  todoIcon: { flexDirection: "row", alignItems: "center" },
+  iconButton: {
+    marginHorizontal: 5,
+    color: "black",
+    fontSize: 18,
+  },
+  updateContainer: {
+    position: "absolute",
+    top: 120,
+    backgroundColor: "gray",
+    width: "80%",
+    height: 180,
+    borderRadius: 5,
+    flex: 1,
   },
 });
 export default Todo;
